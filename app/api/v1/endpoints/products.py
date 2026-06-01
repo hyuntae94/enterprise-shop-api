@@ -40,9 +40,7 @@ async def get_product(product_id: int, service: ProductServiceDep) -> ProductRea
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(require_staff)],
 )
-async def create_product(
-    data: ProductCreate, service: ProductServiceDep
-) -> ProductRead:
+async def create_product(data: ProductCreate, service: ProductServiceDep) -> ProductRead:
     return ProductRead.model_validate(await service.create(data))
 
 

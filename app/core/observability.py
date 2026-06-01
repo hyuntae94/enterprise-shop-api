@@ -51,5 +51,5 @@ def setup_observability(app: FastAPI) -> None:
         from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
         FastAPIInstrumentor.instrument_app(app)
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass

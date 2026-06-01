@@ -7,7 +7,7 @@ depend only on these factories, keeping them thin.
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from typing import Annotated
 
 import jwt
@@ -75,7 +75,7 @@ async def get_current_user(
 CurrentUser = Annotated[User, Depends(get_current_user)]
 
 
-def require_roles(*roles: UserRole) -> Callable[[User], User]:
+def require_roles(*roles: UserRole) -> Callable[[User], Awaitable[User]]:
     """Dependency factory enforcing that the current user has one of ``roles``."""
 
     async def _guard(user: CurrentUser) -> User:

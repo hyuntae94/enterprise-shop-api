@@ -23,7 +23,7 @@ dependencies = [
     "redis>=5.0.0",
     "arq>=0.26.0",
     # Auth / security
-    "passlib[bcrypt]>=1.7.4",
+    "bcrypt>=4.1.0",
     "pyjwt>=2.8.0",
     "python-multipart>=0.0.9",
     # Observability
@@ -44,7 +44,6 @@ dev = [
     "pytest-cov>=5.0.0",
     "ruff>=0.4.0",
     "mypy>=1.10.0",
-    "types-passlib",
     "aiosqlite>=0.20.0",       # in-memory test DB
     "asgi-lifespan>=2.1.0",
 ]

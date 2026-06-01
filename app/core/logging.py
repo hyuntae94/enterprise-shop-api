@@ -11,6 +11,7 @@ from __future__ import annotations
 import logging
 import sys
 from contextvars import ContextVar
+from typing import Any, cast
 
 import structlog
 
@@ -18,7 +19,7 @@ import structlog
 request_id_ctx: ContextVar[str | None] = ContextVar("request_id", default=None)
 
 
-def _add_request_id(_logger: object, _name: str, event_dict: dict) -> dict:
+def _add_request_id(_logger: object, _name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
     rid = request_id_ctx.get()
     if rid is not None:
         event_dict["request_id"] = rid
@@ -27,7 +28,7 @@ def _add_request_id(_logger: object, _name: str, event_dict: dict) -> dict:
 
 def configure_logging(*, level: str = "INFO", json_logs: bool = False) -> None:
     """Configure structlog + stdlib logging. Call once at startup."""
-    shared_processors = [
+    shared_processors: list[Any] = [
         structlog.contextvars.merge_contextvars,
         structlog.processors.add_log_level,
         structlog.processors.TimeStamper(fmt="iso", utc=True),
@@ -43,9 +44,7 @@ def configure_logging(*, level: str = "INFO", json_logs: bool = False) -> None:
 
     structlog.configure(
         processors=[*shared_processors, renderer],
-        wrapper_class=structlog.make_filtering_bound_logger(
-            logging.getLevelName(level.upper())
-        ),
+        wrapper_class=structlog.make_filtering_bound_logger(logging.getLevelName(level.upper())),
         logger_factory=structlog.PrintLoggerFactory(),
         cache_logger_on_first_use=True,
     )
@@ -61,4 +60,4 @@ def configure_logging(*, level: str = "INFO", json_logs: bool = False) -> None:
 
 
 def get_logger(name: str | None = None) -> structlog.stdlib.BoundLogger:
-    return structlog.get_logger(name)
+    return cast(structlog.stdlib.BoundLogger, structlog.get_logger(name))

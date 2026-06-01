@@ -30,9 +30,7 @@ class BaseRepository(Generic[ModelT]):
         stmt = select(self.model).filter_by(**filters).limit(1)
         return (await self.session.execute(stmt)).scalar_one_or_none()
 
-    async def list(
-        self, *, offset: int = 0, limit: int = 20, **filters: Any
-    ) -> list[ModelT]:
+    async def list(self, *, offset: int = 0, limit: int = 20, **filters: Any) -> list[ModelT]:
         stmt = select(self.model).filter_by(**filters).offset(offset).limit(limit)
         return list((await self.session.execute(stmt)).scalars().all())
 

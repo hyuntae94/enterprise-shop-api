@@ -26,10 +26,10 @@ class ProductRepository(BaseRepository[Product]):
             count_stmt = count_stmt.where(Product.name.ilike(pattern))
 
         rows = (
-            await self.session.execute(
-                stmt.order_by(Product.id).offset(offset).limit(limit)
-            )
-        ).scalars().all()
+            (await self.session.execute(stmt.order_by(Product.id).offset(offset).limit(limit)))
+            .scalars()
+            .all()
+        )
         total = (await self.session.execute(count_stmt)).scalar_one()
         return list(rows), total
 

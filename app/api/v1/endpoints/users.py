@@ -22,9 +22,7 @@ async def read_me(user: CurrentUser) -> UserRead:
 
 
 @router.patch("/me", response_model=UserRead)
-async def update_me(
-    data: UserUpdate, user: CurrentUser, service: UserServiceDep
-) -> UserRead:
+async def update_me(data: UserUpdate, user: CurrentUser, service: UserServiceDep) -> UserRead:
     updated = await service.update_profile(user, data)
     return UserRead.model_validate(updated)
 
@@ -34,9 +32,7 @@ async def update_me(
     response_model=UserRead,
     dependencies=[Depends(require_admin)],
 )
-async def set_user_role(
-    user_id: int, data: UserRoleUpdate, service: UserServiceDep
-) -> UserRead:
+async def set_user_role(user_id: int, data: UserRoleUpdate, service: UserServiceDep) -> UserRead:
     """Admin-only: change another user's role."""
     updated = await service.set_role(user_id, data.role)
     return UserRead.model_validate(updated)

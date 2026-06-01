@@ -35,5 +35,5 @@ class Page(BaseModel, Generic[T]):
     size: int
 
     @classmethod
-    def create(cls, items: list[T], total: int, params: PageParams) -> "Page[T]":
+    def create(cls, items: list[T], total: int, params: PageParams) -> Page[T]:
         return cls(items=items, total=total, page=params.page, size=params.size)

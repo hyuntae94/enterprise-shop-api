@@ -64,7 +64,7 @@ class BusinessRuleError(AppError):
     code = "business_rule_violation"
 
 
-def _envelope(code: str, message: str, details: dict[str, Any] | None = None) -> dict:
+def _envelope(code: str, message: str, details: dict[str, Any] | None = None) -> dict[str, Any]:
     return {"error": {"code": code, "message": message, "details": details or {}}}
 
 

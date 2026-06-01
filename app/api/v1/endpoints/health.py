@@ -24,12 +24,12 @@ async def readiness(db: DbSession) -> dict[str, object]:
     try:
         await db.execute(text("SELECT 1"))
         checks["database"] = "ok"
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         checks["database"] = f"error: {exc}"
     try:
         await get_redis().ping()
         checks["redis"] = "ok"
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         checks["redis"] = f"error: {exc}"
 
     healthy = all(v == "ok" for v in checks.values())

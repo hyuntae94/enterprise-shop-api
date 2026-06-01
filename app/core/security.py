@@ -12,12 +12,14 @@ from datetime import UTC, datetime, timedelta
 from enum import StrEnum
 from typing import Any
 
+import bcrypt
 import jwt
-from passlib.context import CryptContext
 
 from app.core.config import settings
 
-_pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# bcrypt operates on the first 72 bytes of the input. We truncate explicitly so
+# longer passwords hash deterministically instead of raising on bcrypt >= 5.
+_BCRYPT_MAX_BYTES = 72
 
 
 class TokenType(StrEnum):
@@ -26,12 +28,20 @@ class TokenType(StrEnum):
 
 
 # --- Passwords -------------------------------------------------------------
+def _to_bytes(password: str) -> bytes:
+    return password.encode("utf-8")[:_BCRYPT_MAX_BYTES]
+
+
 def hash_password(password: str) -> str:
-    return _pwd_context.hash(password)
+    return bcrypt.hashpw(_to_bytes(password), bcrypt.gensalt()).decode("utf-8")
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return _pwd_context.verify(plain, hashed)
+    try:
+        return bcrypt.checkpw(_to_bytes(plain), hashed.encode("utf-8"))
+    except ValueError:
+        # Malformed/empty stored hash — treat as a failed verification.
+        return False
 
 
 # --- JWT -------------------------------------------------------------------

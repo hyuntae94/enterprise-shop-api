@@ -12,9 +12,9 @@ from app.db.base import Base, TimestampMixin
 
 
 class OrderStatus(StrEnum):
-    PENDING = "pending"        # created, awaiting payment
-    PAID = "paid"              # payment captured
-    FULFILLED = "fulfilled"    # shipped
+    PENDING = "pending"  # created, awaiting payment
+    PAID = "paid"  # payment captured
+    FULFILLED = "fulfilled"  # shipped
     CANCELLED = "cancelled"
     REFUNDED = "refunded"
 
@@ -33,7 +33,7 @@ class Order(Base, TimestampMixin):
     currency: Mapped[str] = mapped_column(String(3), default="USD", nullable=False)
     total_amount: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=0, nullable=False)
 
-    items: Mapped[list["OrderItem"]] = relationship(
+    items: Mapped[list[OrderItem]] = relationship(
         back_populates="order",
         cascade="all, delete-orphan",
         lazy="selectin",  # eager-load lines without N+1 on order reads

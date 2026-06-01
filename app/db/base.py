@@ -16,7 +16,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, declared_attr, mapped_column
 
 class Base(DeclarativeBase):
     @declared_attr.directive
-    def __tablename__(cls) -> str:  # noqa: N805
+    def __tablename__(cls) -> str:
         # CamelCase -> snake_case, pluralized naively (User -> users).
         name = re.sub(r"(?<!^)(?=[A-Z])", "_", cls.__name__).lower()
         return name if name.endswith("s") else f"{name}s"
@@ -25,9 +25,7 @@ class Base(DeclarativeBase):
 class TimestampMixin:
     """Adds server-managed created/updated timestamps."""
 
-    created_at: Mapped[datetime] = mapped_column(
-        server_default=func.now(), nullable=False
-    )
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now(), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(
         server_default=func.now(), onupdate=func.now(), nullable=False
     )

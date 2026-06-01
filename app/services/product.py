@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import json
 
 from app.core.exceptions import ConflictError, NotFoundError
@@ -61,7 +62,7 @@ class ProductService:
     async def _cache_get(self, key: str) -> tuple[list[Product], int] | None:
         try:
             raw = await get_redis().get(key)
-        except Exception:  # noqa: BLE001
+        except Exception:
             return None
         if not raw:
             return None
@@ -73,19 +74,15 @@ class ProductService:
 
     async def _cache_set(self, key: str, result: tuple[list[Product], int]) -> None:
         items, total = result
-        try:
+        with contextlib.suppress(Exception):
             await get_redis().set(
                 key,
                 json.dumps({"ids": [p.id for p in items], "total": total}),
                 ex=_CACHE_TTL,
             )
-        except Exception:  # noqa: BLE001
-            pass
 
     async def _invalidate_list_cache(self) -> None:
-        try:
+        with contextlib.suppress(Exception):
             redis = get_redis()
             async for key in redis.scan_iter("products:list:*"):
                 await redis.delete(key)
-        except Exception:  # noqa: BLE001
-            pass

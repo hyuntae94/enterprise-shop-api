@@ -11,7 +11,7 @@ Enqueue from request handlers:
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, ClassVar
 
 from arq.connections import RedisSettings
 
@@ -44,7 +44,7 @@ async def _shutdown(ctx: dict[str, Any]) -> None:
 class WorkerSettings:
     """arq entrypoint configuration."""
 
-    functions = [send_order_confirmation, reindex_product]
+    functions: ClassVar = [send_order_confirmation, reindex_product]
     on_startup = _startup
     on_shutdown = _shutdown
     redis_settings = RedisSettings(

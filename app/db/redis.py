@@ -16,7 +16,7 @@ _redis: aioredis.Redis | None = None
 def get_redis() -> aioredis.Redis:
     global _redis
     if _redis is None:
-        _redis = aioredis.from_url(
+        _redis = aioredis.from_url(  # type: ignore[no-untyped-call]
             settings.REDIS_URL,
             decode_responses=True,
             health_check_interval=30,

@@ -12,6 +12,7 @@ import uuid
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
+from starlette.types import ASGIApp
 
 from app.core.config import settings
 from app.core.logging import get_logger, request_id_ctx
@@ -22,9 +23,7 @@ logger = get_logger("http")
 class RequestContextMiddleware(BaseHTTPMiddleware):
     """Bind a request id, measure latency, and emit one structured access log."""
 
-    async def dispatch(
-        self, request: Request, call_next: RequestResponseEndpoint
-    ) -> Response:
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         rid = request.headers.get("X-Request-ID", uuid.uuid4().hex)
         token = request_id_ctx.set(rid)
         start = time.perf_counter()
@@ -52,13 +51,11 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     if Redis is unavailable so a cache outage never takes down the API.
     """
 
-    def __init__(self, app, limit_per_minute: int | None = None) -> None:
+    def __init__(self, app: ASGIApp, limit_per_minute: int | None = None) -> None:
         super().__init__(app)
         self.limit = limit_per_minute or settings.RATE_LIMIT_PER_MINUTE
 
-    async def dispatch(
-        self, request: Request, call_next: RequestResponseEndpoint
-    ) -> Response:
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         from app.db.redis import get_redis  # local import avoids import cycle
 
         client = request.client.host if request.client else "anonymous"
@@ -70,7 +67,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             current = await redis.incr(key)
             if current == 1:
                 await redis.expire(key, 60)
-        except Exception:  # noqa: BLE001 — fail open on cache problems
+        except Exception:
             logger.warning("rate_limit_redis_unavailable")
             return await call_next(request)
 
