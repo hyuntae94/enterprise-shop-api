@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip3 --version)",
+      "Bash(git --version)",
+      "Bash(python3 -m compileall -q app tests alembic/env.py alembic/versions)",
+      "Bash(echo \"=== compile exit: $? ===\")",
+      "Bash(chmod +x /Users/hyunkim/Desktop/fastAPI/.claude/skills/api-smoke-test/smoke.sh)",
+      "Bash(bash -n /Users/hyunkim/Desktop/fastAPI/.claude/skills/api-smoke-test/smoke.sh)",
+      "Bash(chmod +x .claude/hooks/*.sh)",
+      "Bash(bash -n .claude/hooks/format-python.sh)",
+      "Bash(bash -n .claude/hooks/protect-secrets.sh)",
+      "Bash(python3 -c \"import json; json.load\\(open\\('.claude/settings.json'\\)\\)\")",
+      "Bash(bash .claude/hooks/protect-secrets.sh)",
+      "Bash(echo \"protect-secrets exit on .env-like \\(basename x.env not matched\\): $?\")",
+      "Bash(echo \"protect exit on .env \\(expect 2\\): $?\")",
+      "Bash(git config *)",
+      "Bash(gh auth *)",
+      "Bash(gh api *)",
+      "Bash(git add *)"
+    ]
+  }
+}
