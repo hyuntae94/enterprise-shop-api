@@ -1,5 +1,9 @@
 # Enterprise Shop API
 
+[![CI](https://github.com/hyuntae94/enterprise-shop-api/actions/workflows/ci.yml/badge.svg)](https://github.com/hyuntae94/enterprise-shop-api/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.11-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-async-009688)
+
 An enterprise-grade e-commerce backend built with **FastAPI**, **async
 SQLAlchemy 2.0**, **PostgreSQL**, and **Redis** — structured as a clean,
 layered architecture and shipped with a full **Claude Code** agent/skill toolkit
