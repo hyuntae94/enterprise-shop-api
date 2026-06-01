@@ -14,7 +14,12 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-COPY pyproject.toml ./
+# Copy the metadata and source needed to build the wheel. The hatchling backend
+# reads README.md (project.readme) and packages the app/ tree, so both must be
+# present before install — copying just these keeps the dependency layer cached
+# across changes to tests/, docs/, etc.
+COPY pyproject.toml README.md ./
+COPY app ./app
 # Install into an isolated prefix that we copy into the runtime stage.
 RUN pip install --prefix=/install ".[dev]"
 
